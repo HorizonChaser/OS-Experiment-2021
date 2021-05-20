@@ -7,7 +7,7 @@ public class HNode {
     long size; //File size, zero for folder node
     long createdTime, modifiedTime, accessedTime;
     HStatus status;
-    ArrayList<HNode> childNodeList = new ArrayList<>();
+    final ArrayList<HNode> childNodeList = new ArrayList<>();
     protected HNode() {
     }
 }

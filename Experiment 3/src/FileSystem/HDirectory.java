@@ -12,7 +12,7 @@ public class HDirectory extends HNode {
         super();
         super.name = name;
         super.size = 0;
-        super.createdTime = System.currentTimeMillis()/1000;
+        super.createdTime = System.currentTimeMillis() / 1000;
         super.accessedTime = super.modifiedTime = -1;
         super.status = HStatus.RW; //default as Read and Write
     }
@@ -20,20 +20,21 @@ public class HDirectory extends HNode {
     /**
      * Initialize a new directory in given status
      *
-     * @param name dir name
+     * @param name   dir name
      * @param status dir status
      */
     public HDirectory(String name, HStatus status) {
         super();
         super.name = name;
         super.size = 0;
-        super.createdTime = System.currentTimeMillis()/1000;
+        super.createdTime = System.currentTimeMillis() / 1000;
         super.accessedTime = super.modifiedTime = -1;
         super.status = status;
     }
 
     /**
      * Get childNodeList
+     *
      * @return childNodeList
      */
     public List<HNode> getChildNodeList() {

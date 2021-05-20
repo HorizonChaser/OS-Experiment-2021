@@ -94,8 +94,9 @@ public class HActions {
 
     /**
      * mkdir, make a new dir
+     *
      * @param cmdArray cmd array
-     * @param root root of FS
+     * @param root     root of FS
      */
     public static void mkdir(String[] cmdArray, HNode root) {
         var cmdList = Arrays.asList(cmdArray);
@@ -110,13 +111,13 @@ public class HActions {
         pathArray = Arrays.copyOfRange(pathArray, 1, pathArray.length);
         fatherNode = getFatherNode(pathArray, root);
         if (pathArray.length == 1) {
-            for(HNode curr: root.childNodeList) {
+            for (HNode curr : root.childNodeList) {
                 if (curr.name.equals(pathArray[0])) {
                     System.out.println("mkdir: dir already exists");
                     return;
                 }
             }
-            HDirectory newDir = new HDirectory(pathArray[pathArray.length-1]);
+            HDirectory newDir = new HDirectory(pathArray[pathArray.length - 1]);
             root.childNodeList.add(newDir);
             return;
         }
@@ -129,7 +130,7 @@ public class HActions {
             System.out.println("mkdir: dir already exists");
             return;
         }
-        HDirectory newDir = new HDirectory(pathArray[pathArray.length-1]);
+        HDirectory newDir = new HDirectory(pathArray[pathArray.length - 1]);
         fatherNode.childNodeList.add(newDir);
     }
 
@@ -143,8 +144,9 @@ public class HActions {
 
     /**
      * ls command, list content of a path
+     *
      * @param cmdArray command array
-     * @param root root of FS
+     * @param root     root of FS
      */
     public static void list(String[] cmdArray, HNode root) {
         List<String> cmdList = Arrays.asList(cmdArray);
@@ -155,28 +157,32 @@ public class HActions {
             return;
         }
 
-        if (cmdList.contains("-v")) {
-            //TODO support verbose mode
-        }
         if (cmdList.contains("-r")) {
             //TODO support recursive mode
         }
 
-        //special judge for root dir
-        if (cmdList.get(1).equals("/")) {
+        Boolean isVerbose = false;
+        if (cmdList.contains("-v")) {
+            System.out.println("  Name  " + " " + "  Type  " + " " + "  Size  " + " " + " Status " + " " + "  C Time  " + " " + "  A Time  " + " " + "  M Time  ");
+            System.out.println("--------" + " " + "--------" + " " + "--------" + " " + "--------" + " " + "----------" + " " + "----------" + " " + "----------");
+            isVerbose = true;
+        } else {
             System.out.println("  Name  " + " " + "  Type  " + " " + "  Size  " + " " + " Status ");
             System.out.println("--------" + " " + "--------" + " " + "--------" + " " + "--------");
+        }
+
+        if (cmdList.contains("/")) {
             for (HNode curr : root.childNodeList) {
-                listCore(curr, false);
+                listCore(curr, isVerbose);
             }
             return;
         }
 
-        String[] pathArray = cmdList.get(1).split("/");
+        String[] pathArray = cmdList.get(2).split("/");
         pathArray = Arrays.copyOfRange(pathArray, 1, pathArray.length);
         pathNode = getNode(pathArray, root);
         if (pathNode == null) {
-            System.out.println("[ERROR] Path not found: " + cmdList.get(1));
+            System.out.println("[ERROR] Path not found: " + cmdList.get(2));
             return;
         }
         if (pathNode instanceof HFile) {
@@ -184,11 +190,8 @@ public class HActions {
             return;
         }
 
-        System.out.println("  Name  " + " " + "  Type  " + " " + "  Size  " + " " + " Status ");
-        System.out.println("--------" + " " + "--------" + " " + "--------" + " " + "--------");
-
         for (HNode curr : pathNode.childNodeList) {
-            listCore(curr, false);
+            listCore(curr, isVerbose);
         }
     }
 
@@ -207,7 +210,7 @@ public class HActions {
         //name part
         StringBuilder namePart = new StringBuilder();
         if (curr.name.length() > 8) {
-            namePart.append(curr.name.substring(0, 6)).append("..");
+            namePart.append(curr.name, 0, 6).append("..");
         } else {
             namePart.append(curr.name).append(" ".repeat(8 - curr.name.length()));
         }
@@ -247,13 +250,13 @@ public class HActions {
         }
         statusPart.append(' ');
 
-        if (!isVerbose) {
-            result.append(namePart).append(typePart).append(sizePart).append(statusPart);
-            System.out.println(result.toString());
-            return;
-        } else {
-            result.append(namePart);//TODO support verbose mode
+        result.append(namePart).append(typePart).append(sizePart).append(statusPart);
+        if (isVerbose) {
+            result.append(curr.createdTime).append(" ")
+                    .append(curr.accessedTime).append(" ")
+                    .append(curr.modifiedTime).append(" ");
         }
+        System.out.println(result);
 
     }
 
@@ -270,8 +273,9 @@ public class HActions {
 
     /**
      * chmod, change file/dir status
+     *
      * @param cmdArray cmd array
-     * @param root root of FS
+     * @param root     root of FS
      */
     public static void chmod(String[] cmdArray, HNode root) {
         var cmdList = Arrays.asList(cmdArray);
@@ -282,15 +286,14 @@ public class HActions {
         }
 
         HStatus newStatus;
-        if (cmdList.get(1).equals("RW")) {
-            newStatus = HStatus.RW;
-        } else if(cmdList.get(1).equals("RO")) {
-            newStatus = HStatus.RO;
-        } else if(cmdList.get(1).equals("RWX")) {
-            newStatus = HStatus.RWX;
-        } else {
-            System.out.println("[ERROR] Invalid status: " + cmdList.get(1));
-            return;
+        switch (cmdList.get(1)) {
+            case "RW" -> newStatus = HStatus.RW;
+            case "RO" -> newStatus = HStatus.RO;
+            case "RWX" -> newStatus = HStatus.RWX;
+            default -> {
+                System.out.println("[ERROR] Invalid status: " + cmdList.get(1));
+                return;
+            }
         }
 
         if (cmdList.get(2).equals("/")) {
@@ -321,8 +324,9 @@ public class HActions {
 
     /**
      * rm command, remove a file or dir
+     *
      * @param cmdArray cmd array
-     * @param root root of FS
+     * @param root     root of FS
      */
     public static void remove(String[] cmdArray, HNode root) {
         var cmdList = Arrays.asList(cmdArray);
@@ -330,7 +334,7 @@ public class HActions {
             showRemoveHelp();
             return;
         }
-        if (cmdList.get(cmdList.size()-1).equals("/")) {
+        if (cmdList.get(cmdList.size() - 1).equals("/")) {
             System.out.println("rm: root cannot be removed");
             return;
         }
@@ -339,25 +343,25 @@ public class HActions {
             //TODO recursively delete
         }
 
-        String[] pathArray = cmdList.get(cmdList.size()-1).split("/");
+        String[] pathArray = cmdList.get(cmdList.size() - 1).split("/");
         pathArray = Arrays.copyOfRange(pathArray, 1, pathArray.length);
 
         HNode pathNode, fatherNode;
         pathNode = getNode(pathArray, root);
         if (pathNode == null) {
-            System.out.println("[ERROR] Path not found: " + cmdList.get(cmdList.size()-1));
+            System.out.println("[ERROR] Path not found: " + cmdList.get(cmdList.size() - 1));
             return;
         }
         if (pathNode instanceof HDirectory) {
-            System.out.println("rm: " + cmdList.get(cmdList.size()-1) + " is a directory, use -r if you want to remove it");
+            System.out.println("rm: " + cmdList.get(cmdList.size() - 1) + " is a directory, use -r if you want to remove it");
             return;
         }
         fatherNode = getFatherNode(pathArray, root);
-        for (HNode curr: fatherNode.childNodeList) {
-            if (curr.name.equals(pathArray[pathArray.length-1])) {
+        for (HNode curr : fatherNode.childNodeList) {
+            if (curr.name.equals(pathArray[pathArray.length - 1])) {
                 fatherNode.childNodeList.remove(curr);
                 if (cmdList.contains("-v")) {
-                    System.out.println("rm: removed " + cmdList.get(cmdList.size()-1));
+                    System.out.println("rm: removed " + cmdList.get(cmdList.size() - 1));
                 }
                 return;
             }

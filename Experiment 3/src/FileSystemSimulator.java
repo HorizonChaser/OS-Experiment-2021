@@ -5,7 +5,7 @@ import FileSystem.HFile;
 import java.util.Scanner;
 
 public class FileSystemSimulator {
-    public static HDirectory root = new HDirectory("root");
+    public static final HDirectory root = new HDirectory("root");
 
     public static void main(String[] args) throws InterruptedException {
         Scanner in = new Scanner(System.in);
