@@ -11,7 +11,7 @@ public class HFile extends HNode{
         super();
         super.name = name;
         super.size = size;
-        super.createdTime = super.accessedTime = super.modifiedTime = System.currentTimeMillis();
+        super.createdTime = super.accessedTime = super.modifiedTime = System.currentTimeMillis()/1000;
         super.status = HStatus.RW; //default as Read and Write
     }
 
@@ -25,7 +25,7 @@ public class HFile extends HNode{
         super();
         super.name = name;
         super.size = size;
-        super.createdTime = super.accessedTime = super.modifiedTime = System.currentTimeMillis();
+        super.createdTime = super.accessedTime = super.modifiedTime = System.currentTimeMillis()/1000;
         super.status = status;
     }
 }

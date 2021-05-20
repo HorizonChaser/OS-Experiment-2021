@@ -3,7 +3,7 @@ package FileSystem;
 import java.util.ArrayList;
 
 public class HNode {
-    String name;
+    public String name;
     long size; //File size, zero for folder node
     long createdTime, modifiedTime, accessedTime;
     HStatus status;
