@@ -26,3 +26,22 @@ This is the repo for my OS class experiment in 2021 summer
 - Implement syncing operations and functions
 - Implement the sync model of the bus driver and the conductor while operating the bus
 - Show the output of the model
+
+## Experiment 3: Share Process Data between Threads
+
+### Description
+
+- Create a new thread, and change data of process inside this thread
+
+### Detail
+
+- Define a global variable in process
+- Change that variable inside a thread you create and print it
+
+## Experiment X: Simulate a File System
+
+### Note
+This experiment **has been deleted**  in latest version of experiment guide book, and it was finished by my carelessness of mixing up the out-dated version and latest version of the guide...
+
+### Description
+- Simulate a file system, and implement basic methods
